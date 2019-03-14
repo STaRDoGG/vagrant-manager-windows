@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Web;
+using Microsoft.Win32;
+using System.Diagnostics;
 
 namespace Lanayo.Vagrant_Manager {
     public static class Util {
@@ -71,6 +71,39 @@ namespace Lanayo.Vagrant_Manager {
             }
 
             return ub.Uri;
+        }
+
+        /// <summary>
+        /// Looks in the registry for the respective VirtualBox keys
+        /// </summary>
+        /// <param name="which">Either "Version" or "InstallDir" for the VBox version or Path</param>
+        /// <returns>Null if nothing; a version number or install path (Strings)</returns>
+        public static string ReadVboxRegKeys(string which) {
+
+            string registryValue = string.Empty;
+            RegistryKey localKey = null;
+
+            // Need to know OS Bitness first ...
+            if (Environment.Is64BitOperatingSystem) {
+                localKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64);
+            } else {
+                localKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32);
+            }
+
+            try {
+
+                localKey = localKey.OpenSubKey(@"SOFTWARE\\Oracle\\VirtualBox");
+
+                if (which == "Version") {
+                    registryValue = localKey.GetValue("Version").ToString();
+                } else {
+                    registryValue = localKey.GetValue("InstallDir").ToString();
+                }
+
+            } catch (NullReferenceException nre) {
+                Debug.Print(string.Format("Error Reading VirtualBox Registry Key: {0}", nre));
+            }
+            return registryValue;
         }
     }
 }

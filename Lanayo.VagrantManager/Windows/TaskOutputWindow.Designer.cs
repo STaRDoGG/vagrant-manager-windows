@@ -45,6 +45,7 @@
             // 
             this.TaskProgressBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.TaskProgressBar.ForeColor = System.Drawing.Color.SteelBlue;
             this.TaskProgressBar.Location = new System.Drawing.Point(16, 30);
             this.TaskProgressBar.MarqueeAnimationSpeed = 10;
             this.TaskProgressBar.Name = "TaskProgressBar";
@@ -56,9 +57,10 @@
             // 
             this.TaskCommandTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.TaskCommandTextBox.BackColor = System.Drawing.Color.Black;
-            this.TaskCommandTextBox.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TaskCommandTextBox.ForeColor = System.Drawing.Color.Lime;
+            this.TaskCommandTextBox.BackColor = System.Drawing.Color.SteelBlue;
+            this.TaskCommandTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.TaskCommandTextBox.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.TaskCommandTextBox.ForeColor = System.Drawing.Color.White;
             this.TaskCommandTextBox.Location = new System.Drawing.Point(16, 60);
             this.TaskCommandTextBox.Name = "TaskCommandTextBox";
             this.TaskCommandTextBox.ReadOnly = true;
@@ -95,8 +97,10 @@
             this.OutputTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.OutputTextBox.BackColor = System.Drawing.Color.White;
-            this.OutputTextBox.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.OutputTextBox.BackColor = System.Drawing.Color.SteelBlue;
+            this.OutputTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.OutputTextBox.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.OutputTextBox.ForeColor = System.Drawing.Color.White;
             this.OutputTextBox.Location = new System.Drawing.Point(16, 87);
             this.OutputTextBox.Multiline = true;
             this.OutputTextBox.Name = "OutputTextBox";

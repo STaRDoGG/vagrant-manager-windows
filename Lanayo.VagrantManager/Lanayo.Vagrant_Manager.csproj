@@ -22,7 +22,7 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>6</ApplicationRevision>
+    <ApplicationRevision>5</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
@@ -90,19 +90,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Util.cs" />
-    <Compile Include="Windows\AboutWindow.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Windows\AboutWindow.Designer.cs">
-      <DependentUpon>AboutWindow.cs</DependentUpon>
-    </Compile>
     <Compile Include="Windows\ComboBoxItem.cs" />
-    <Compile Include="Windows\ManageBookmarksWindow.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Windows\ManageBookmarksWindow.Designer.cs">
-      <DependentUpon>ManageBookmarksWindow.cs</DependentUpon>
-    </Compile>
     <Compile Include="Windows\PreferencesWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -125,12 +113,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="Windows\AboutWindow.resx">
-      <DependentUpon>AboutWindow.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Windows\ManageBookmarksWindow.resx">
-      <DependentUpon>ManageBookmarksWindow.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Windows\PreferencesWindow.resx">
       <DependentUpon>PreferencesWindow.cs</DependentUpon>
     </EmbeddedResource>
@@ -299,6 +281,39 @@
       <Project>{dcc3f2d9-cb10-4405-a619-1bdf10d7e44c}</Project>
       <Name>SharpSparkle</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\Exit_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\Refresh_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\Refresh_disabled_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\Add_16xMD.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\Subtract_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\VirtualBox.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\rdp.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\rdp_24x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\Cancel_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\Save_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\SaveTable_16x.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

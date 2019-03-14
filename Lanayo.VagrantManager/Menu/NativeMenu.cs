@@ -7,18 +7,12 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Reflection;
-using System.Resources;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Forms;
 
 namespace Lanayo.Vagrant_Manager.Menu {
     class NativeMenu : NativeMenuItemDelegate {
-        private AboutWindow AboutWindow;
         private PreferencesWindow PreferencesWindow;
-        private ManageBookmarksWindow ManageBookmarksWindow;
 
         public MenuDelegate Delegate { get; set; }
 
@@ -26,11 +20,10 @@ namespace Lanayo.Vagrant_Manager.Menu {
         private NotifyIcon _NotifyIcon;
         private ToolStripMenuItem _RefreshMenuItem;
         private List<NativeMenuItem> _MenuItems;
-
         private ToolStripSeparator _TopMachineSeparator;
         private ToolStripSeparator _BottomMachineSeparator;
-
-        private ToolStripMenuItem _CheckForUpdatesMenuItem;
+        private ToolStripSeparator _PreferencesSeparator;
+        private ToolStripSeparator _ExitSeparator;
 
         private int _RefreshIconFrame;
         private Timer _RefreshTimer;
@@ -53,7 +46,7 @@ namespace Lanayo.Vagrant_Manager.Menu {
 
             _NotifyIcon = new NotifyIcon() {
                 Icon = Icon.FromHandle(Resources.vagrant_logo_off.GetHicon()),
-                Text = "Vagrant Manager",
+                Text = "Vagrant Manager v" + Application.ProductVersion,
                 ContextMenuStrip = _Menu,
                 Visible = true,
             };
@@ -65,7 +58,10 @@ namespace Lanayo.Vagrant_Manager.Menu {
             _RefreshMenuItem = Util.MakeBlankToolstripMenuItem("Refresh", RefreshMenuItem_Click);
             _Menu.Items.Add(_RefreshMenuItem);
 
-            _TopMachineSeparator = new ToolStripSeparator();
+            //_Menu.Items.Add("Refresh", Resources.Refresh_16x, RefreshMenuItem_Click);
+            //_Menu.Items.Add("-");
+
+            //_TopMachineSeparator = new ToolStripSeparator();
 
             // instances here
 
@@ -73,27 +69,41 @@ namespace Lanayo.Vagrant_Manager.Menu {
             _Menu.Items.Add(_BottomMachineSeparator);
 
             ToolStripMenuItem allMachinesMenuItem = new ToolStripMenuItem("All Machines");
-            allMachinesMenuItem.DropDownItems.AddRange(new ToolStripMenuItem[] {
+
+            // Added coloring to denote that it's a 'dangerous' action
+            ToolStripMenuItem _destroyItem = new ToolStripMenuItem("Destroy", Resources.destroy, AllDestroyMenuitem_Click);
+            _destroyItem.ForeColor = Color.White;
+            _destroyItem.BackColor = Color.Maroon;
+
+            allMachinesMenuItem.DropDownItems.AddRange(new ToolStripItem[] {
                 new ToolStripMenuItem("Up", Resources.up, AllUpMenuItem_Click),
                 new ToolStripMenuItem("Reload", Resources.reload, AllReloadMenuItem_Click),
-                new ToolStripMenuItem("Suspend", Resources.suspend, AllSuspendMenuItem_Click ),
+                new ToolStripMenuItem("Suspend", Resources.suspend, AllSuspendMenuItem_Click),
                 new ToolStripMenuItem("Halt", Resources.halt, AllHaltMenuItem_Click),
+                new ToolStripSeparator(),
                 new ToolStripMenuItem("Provision", Resources.provision, AllProvisionMenuItem_Click),
-                new ToolStripMenuItem("Destroy", Resources.destroy, AllDestroyMenuitem_Click)
+                new ToolStripSeparator(),
+                //new ToolStripMenuItem("Destroy", Resources.destroy, AllDestroyMenuitem_Click)
+                _destroyItem
             });
-            _Menu.Items.Add(allMachinesMenuItem);
-            _Menu.Items.Add(Util.MakeBlankToolstripMenuItem("Manage Bookmarks", ManageBookmarksMenuItem_Click));
-            _Menu.Items.Add(Util.MakeBlankToolstripMenuItem("Preferences", PreferencesMenuItem_Click));
-            _Menu.Items.Add(Util.MakeBlankToolstripMenuItem("About", AboutMenuItem_Click));
 
-            _CheckForUpdatesMenuItem = Util.MakeBlankToolstripMenuItem("Check For Updates", CheckForUpdatesMenuItem_Click);
-            _Menu.Items.Add(_CheckForUpdatesMenuItem);
+            _Menu.Items.Add(allMachinesMenuItem);
+
+            _PreferencesSeparator = new ToolStripSeparator();
+            _Menu.Items.Add(_PreferencesSeparator);
+
+            _Menu.Items.Add(Util.MakeBlankToolstripMenuItem("Manage Bookmarks", ManageBookmarksMenuItem_Click));
+            _Menu.Items.Add(Util.MakeBlankToolstripMenuItem("Configuration", PreferencesMenuItem_Click));
+
+            _ExitSeparator = new ToolStripSeparator();
+            _Menu.Items.Add(_ExitSeparator);
 
             _Menu.Items.Add(Util.MakeBlankToolstripMenuItem("Exit", ExitMenuItem_Click));
+
+
         }
 
         #region Notification event handlers
-
 
         private void BookmarksUpdated(Notification notification) {
             this.RebuildMenu();
@@ -262,6 +272,9 @@ namespace Lanayo.Vagrant_Manager.Menu {
         public void NativeMenuItemSSHInstance(NativeMenuItem menuItem) {
             this.PerformAction("ssh", menuItem.Instance);
         }
+        public void NativeMenuItemRDPInstance(NativeMenuItem menuItem) {
+            this.PerformAction("rdp", menuItem.Instance);
+        }
         public void NativeMenuItemSuspendAllMachines(NativeMenuItem menuItem) {
             this.PerformAction("suspend", menuItem.Instance);
         }
@@ -303,12 +316,14 @@ namespace Lanayo.Vagrant_Manager.Menu {
         public void NativeMenuItemAddBookmark(NativeMenuItem menuItem) {
             Delegate.AddBookmarkWithInstance(menuItem.Instance);
         }
-
         public void NativeMenuItemUpMachine(VagrantMachine machine) {
             this.PerformAction("up", machine);
         }
         public void NativeMenuItemSSHMachine(VagrantMachine machine) {
             this.PerformAction("ssh", machine);
+        }
+        public void NativeMenuItemRDPMachine(VagrantMachine machine) {
+            this.PerformAction("rdp", machine);
         }
         public void NativeMenuItemSuspendMachine(VagrantMachine machine) {
             this.PerformAction("suspend", machine);
@@ -382,7 +397,7 @@ namespace Lanayo.Vagrant_Manager.Menu {
         }
 
         private void AllDestroyMenuitem_Click(object sender, EventArgs e) {
-            DialogResult dialogResult = MessageBox.Show("Are you sure?", "Delete Confirmation", MessageBoxButtons.YesNo);
+            DialogResult dialogResult = MessageBox.Show("Are you SURE you want to destroy this?", "Destroy Confirmation", MessageBoxButtons.YesNo);
             if (dialogResult == DialogResult.Yes) {
                 VagrantManager.Instance.Instances.ToList().ForEach(instance => {
                     instance.Machines.ToList().ForEach(machine => {
@@ -400,24 +415,13 @@ namespace Lanayo.Vagrant_Manager.Menu {
             App.Instance.RefreshVagrantMachines();
         }
         private void ManageBookmarksMenuItem_Click(object sender, EventArgs e) {
-            ManageBookmarksWindow = new ManageBookmarksWindow();
-            ManageBookmarksWindow.StartPosition = FormStartPosition.CenterScreen;
-            ManageBookmarksWindow.Show();
+            PreferencesWindow = new PreferencesWindow();
+            PreferencesWindow.Tag = "ManageBookmarks";
+            PreferencesWindow.Show();
         }
         private void PreferencesMenuItem_Click(object sender, EventArgs e) {
             PreferencesWindow = new PreferencesWindow();
-            PreferencesWindow.StartPosition = FormStartPosition.CenterScreen;
             PreferencesWindow.Show();
-        }
-
-        private void AboutMenuItem_Click(object sender, EventArgs e) {
-            AboutWindow = new AboutWindow();
-            AboutWindow.StartPosition = FormStartPosition.CenterScreen;
-            AboutWindow.Show();
-        }
-
-        private void CheckForUpdatesMenuItem_Click(object sender, EventArgs e) {
-            SharpSparkle.SharpSparkle.CheckUpdateWithUi();
         }
 
         private void ExitMenuItem_Click(object Sender, EventArgs e) {

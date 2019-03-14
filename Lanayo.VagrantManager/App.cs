@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
-using System.Linq;
-using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Lanayo.Vagrant_Manager.Core.Bookmarks;
@@ -13,6 +9,7 @@ using Lanayo.Vagrant_Manager.Windows;
 using Lanayo.Vagrant_Manager.Menu;
 using Lanayo.Vagrant_Manager.Core.Providers;
 using System.IO;
+using Microsoft.Win32;
 
 namespace Lanayo.Vagrant_Manager {
     public enum VagrantMachineState { UnknownState, NotCreatedState, PowerOffState, SavedState, RunningState, RestoringState }
@@ -122,6 +119,9 @@ namespace Lanayo.Vagrant_Manager {
             if (action == "ssh") {
                 action = String.Format("cd /d {0} && vagrant ssh", Util.EscapeShellArg(instance.Path));
                 this.RunTerminalCommand(action);
+            } else if (action == "rdp") {
+                action = String.Format("cd /d {0} && vagrant rdp", Util.EscapeShellArg(instance.Path));
+                this.RunTerminalCommand(action);
             } else {
                 this.RunVagrantAction(action, instance);
             }
@@ -129,6 +129,9 @@ namespace Lanayo.Vagrant_Manager {
         public void PerformVagrantAction(string action, VagrantMachine machine) {
             if (action == "ssh") {
                 action = String.Format("cd /d {0} && vagrant ssh {1}", Util.EscapeShellArg(machine.Instance.Path), machine.Name);
+                this.RunTerminalCommand(action);
+            } else if (action == "rdp") {
+                action = String.Format("cd /d {0} && vagrant rdp {1}", Util.EscapeShellArg(machine.Instance.Path), machine.Name);
                 this.RunTerminalCommand(action);
             } else {
                 this.RunVagrantAction(action, machine);
@@ -328,12 +331,44 @@ namespace Lanayo.Vagrant_Manager {
         }
 
         public void VerifyVBoxManagePath() {
+
+
+            // Check the registry for the VirtualBox installation path
+            //string registryValue = string.Empty;
+            //RegistryKey localKey = null;
+
+            //// Need to know OS Bitness first ...
+            //if (Environment.Is64BitOperatingSystem) {
+            //    localKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64);
+            //} else {
+            //    localKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32);
+            //}
+
+            //try {
+
+            //localKey = localKey.OpenSubKey(@"SOFTWARE\\Oracle\\VirtualBox");
+            //registryValue = localKey.GetValue("InstallDir").ToString();
+
+            string strVboxPath =  Util.ReadVboxRegKeys("InstallPath");
+
+            // If a value was found, save it to the settings, we'll still make sure it truly exists after this.
+            if (!string.IsNullOrEmpty(strVboxPath)) {
+                Properties.Settings.Default.VBoxManagePath = strVboxPath + "VBoxManage.exe";
+                Properties.Settings.Default.Save();
+            }
+
+            //} catch (NullReferenceException nre) {
+            //    Debug.Print(string.Format("Error Reading VirtualBox Registry Key: {0}", nre));
+            //}
+
             if (!File.Exists(Properties.Settings.Default.VBoxManagePath) && !Properties.Settings.Default.VBoxManagePathPrompted) {
 
-                MessageBox.Show("VBoxManage.exe not found at default location.\n\nIf using VirtualBox as your VM provider, you may specify an alternate path now, otherwise you may ignore this message, it will not appear again", "Vagrant Manager", MessageBoxButtons.OK);
+                MessageBox.Show("VBoxManage.exe not found.\n\nIf using VirtualBox as your VM provider, you may specify an alternate path now, otherwise you may ignore this message, it will not appear again.", 
+                    "Vagrant Manager: VBoxManagePath", 
+                    MessageBoxButtons.OK);
 
                 OpenFileDialog dialog = new OpenFileDialog();
-                dialog.Title = "Select VBoxManage.exe";
+                dialog.Title = "[VirtualBox] Select your VBoxManage.exe...";
                 dialog.Filter = "VBoxManage|VBoxManage.exe";
                 if (dialog.ShowDialog() == DialogResult.OK) {
                     DirectoryInfo info = new DirectoryInfo(dialog.FileName);

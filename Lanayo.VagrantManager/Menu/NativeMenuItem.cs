@@ -3,10 +3,7 @@ using Lanayo.Vagrant_Manager.Core.Vagrant;
 using Lanayo.Vagrant_Manager.Properties;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Lanayo.Vagrant_Manager.Menu {
@@ -17,6 +14,7 @@ namespace Lanayo.Vagrant_Manager.Menu {
 
         private ToolStripMenuItem _InstanceUpMenuItem;
         private ToolStripMenuItem _SSHMenuItem;
+        private ToolStripMenuItem _RDPMenuItem;
         private ToolStripMenuItem _InstanceReloadMenuItem;
         private ToolStripMenuItem _InstanceSuspendMenuItem;
         private ToolStripMenuItem _InstanceHaltMenuItem;
@@ -50,6 +48,11 @@ namespace Lanayo.Vagrant_Manager.Menu {
                 if (_SSHMenuItem == null) {
                     _SSHMenuItem = new ToolStripMenuItem("SSH", Resources.ssh, SSHInstance_Click);
                     MenuItem.DropDownItems.Add(_SSHMenuItem);
+                }
+
+                if (_RDPMenuItem == null) {
+                    _RDPMenuItem = new ToolStripMenuItem("RDP", Resources.rdp_24x, RDPInstance_Click);
+                    MenuItem.DropDownItems.Add(_RDPMenuItem);
                 }
 
                 if (_InstanceReloadMenuItem == null) {
@@ -129,6 +132,7 @@ namespace Lanayo.Vagrant_Manager.Menu {
                     if (runningCount < Instance.Machines.Count()) {
                         _InstanceUpMenuItem.Visible = true;
                         _SSHMenuItem.Visible = false;
+                        _RDPMenuItem.Visible = false;
                         _InstanceReloadMenuItem.Visible = false;
                         _InstanceSuspendMenuItem.Visible = false;
                         _InstanceHaltMenuItem.Visible = false;
@@ -138,6 +142,7 @@ namespace Lanayo.Vagrant_Manager.Menu {
                     if (runningCount > 0) {
                         _InstanceUpMenuItem.Visible = false;
                         _SSHMenuItem.Visible = true;
+                        _RDPMenuItem.Visible = true;
                         _InstanceReloadMenuItem.Visible = true;
                         _InstanceSuspendMenuItem.Visible = true;
                         _InstanceHaltMenuItem.Visible = true;
@@ -146,6 +151,7 @@ namespace Lanayo.Vagrant_Manager.Menu {
 
                     if (Instance.Machines.Count() > 1) {
                         _SSHMenuItem.Visible = false;
+                        _RDPMenuItem.Visible = false;
                     }
 
                     if (BookmarkManager.Instance.GetBookmarkWithPath(Instance.Path) != null) {
@@ -197,6 +203,7 @@ namespace Lanayo.Vagrant_Manager.Menu {
 
                         ToolStripMenuItem machineUpMenuItem = new ToolStripMenuItem("Up", Resources.up, UpMachine_Click) { Tag = machine };
                         ToolStripMenuItem machineSSHMenuItem = new ToolStripMenuItem("SSH", Resources.ssh, SSHMachine_Click) { Tag = machine };
+                        ToolStripMenuItem machineRDPMenuItem = new ToolStripMenuItem("RDP", Resources.rdp_24x, RDPMachine_Click) { Tag = machine };
                         ToolStripMenuItem machineReloadMenuItem = new ToolStripMenuItem("Reload", Resources.reload, ReloadMachine_Click) { Tag = machine };
                         ToolStripMenuItem machineSuspendMenuItem = new ToolStripMenuItem("Suspend", Resources.suspend, SuspendMachine_Click) { Tag = machine };
                         ToolStripMenuItem machineHaltMenuItem = new ToolStripMenuItem("Halt", Resources.halt, HaltMachine_Click) { Tag = machine };
@@ -206,6 +213,7 @@ namespace Lanayo.Vagrant_Manager.Menu {
                         machineItem.DropDownItems.AddRange(new ToolStripMenuItem[] {
                             machineUpMenuItem,
                             machineSSHMenuItem,
+                            machineRDPMenuItem,
                             machineReloadMenuItem,
                             machineSuspendMenuItem,
                             machineHaltMenuItem,
@@ -221,6 +229,7 @@ namespace Lanayo.Vagrant_Manager.Menu {
                         if (machine.State == VagrantMachineState.RunningState) {
                             machineUpMenuItem.Visible = false;
                             machineSSHMenuItem.Visible = true;
+                            machineRDPMenuItem.Visible = true;
                             machineReloadMenuItem.Visible = true;
                             machineSuspendMenuItem.Visible = true;
                             machineHaltMenuItem.Visible = true;
@@ -228,6 +237,7 @@ namespace Lanayo.Vagrant_Manager.Menu {
                         } else {
                             machineUpMenuItem.Visible = true;
                             machineSSHMenuItem.Visible = false;
+                            machineRDPMenuItem.Visible = false;
                             machineReloadMenuItem.Visible = false;
                             machineSuspendMenuItem.Visible = false;
                             machineHaltMenuItem.Visible = false;
@@ -248,6 +258,10 @@ namespace Lanayo.Vagrant_Manager.Menu {
 
         public void SSHInstance_Click(object sender, EventArgs e) {
             Delegate.NativeMenuItemSSHInstance(this);
+        }
+
+        public void RDPInstance_Click(object sender, EventArgs e) {
+            Delegate.NativeMenuItemRDPInstance(this);
         }
 
         public void ReloadAllMachines_Click(object sender, EventArgs e) {
@@ -300,6 +314,10 @@ namespace Lanayo.Vagrant_Manager.Menu {
 
         public void SSHMachine_Click(object sender, EventArgs e) {
             Delegate.NativeMenuItemSSHMachine((VagrantMachine)((ToolStripMenuItem)sender).Tag);
+        }
+
+        public void RDPMachine_Click(object sender, EventArgs e) {
+            Delegate.NativeMenuItemRDPMachine((VagrantMachine)((ToolStripMenuItem)sender).Tag);
         }
         
         public void ReloadMachine_Click(object sender, EventArgs e) {

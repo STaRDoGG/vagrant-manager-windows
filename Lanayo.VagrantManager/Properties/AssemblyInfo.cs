@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Vagrant Manager")]
-[assembly: AssemblyDescription("Manage your vagrant machines in one place with Vagrant Manager for Windows")]
+[assembly: AssemblyDescription("Manage your Vagrant machines in one place with Vagrant Manager for Windows")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Lanayo Technologies")]
-[assembly: AssemblyProduct("Vagrant Manager Windows")]
-[assembly: AssemblyCopyright("Copyright ©  2014")]
+[assembly: AssemblyProduct("Vagrant Manager for Windows")]
+[assembly: AssemblyCopyright("Copyright ©  2014 - 2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.0.6")]
-[assembly: AssemblyFileVersion("1.0.0.6")]
+[assembly: AssemblyVersion("1.0.0.9")]
+[assembly: AssemblyFileVersion("1.0.0.9")]

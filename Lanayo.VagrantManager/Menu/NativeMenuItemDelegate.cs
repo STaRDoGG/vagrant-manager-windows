@@ -1,15 +1,10 @@
 ﻿using Lanayo.Vagrant_Manager.Core.Vagrant;
-using Lanayo.Vagrant_Manager.Windows;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lanayo.Vagrant_Manager.Menu {
     interface NativeMenuItemDelegate {
         void NativeMenuItemUpAllMachines(NativeMenuItem menuItem);
         void NativeMenuItemSSHInstance(NativeMenuItem menuItem);
+        void NativeMenuItemRDPInstance(NativeMenuItem menuItem);
         void NativeMenuItemSuspendAllMachines(NativeMenuItem menuItem);
         void NativeMenuItemReloadAllMachines(NativeMenuItem menuItem);
         void NativeMenuItemHaltAllMachines(NativeMenuItem menuItem);
@@ -23,6 +18,7 @@ namespace Lanayo.Vagrant_Manager.Menu {
 
         void NativeMenuItemUpMachine(VagrantMachine machine);
         void NativeMenuItemSSHMachine(VagrantMachine machine);
+        void NativeMenuItemRDPMachine(VagrantMachine machine);
         void NativeMenuItemSuspendMachine(VagrantMachine machine);
         void NativeMenuItemReloadMachine(VagrantMachine machine);
         void NativeMenuItemHaltMachine(VagrantMachine machine);
